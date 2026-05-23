@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마인크래프트 코딩 교실: 챕터 10 - 마인 올림픽 개최</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap');
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #fffaf0; /* 따뜻한 축제 분위기 */
+            color: #1e293b;
+        }
+
+        .nav-item.active {
+            background-color: #fef2f2;
+            color: #dc2626;
+            border-right: 4px solid #ef4444;
+        }
+
+        .section-content {
+            display: none;
+        }
+
+        .section-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- 개막 제안서 섹션 스타일 --- */
+        .opening-container {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+        }
+
+        .festival-header {
+            background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%);
+            padding: 4rem 2rem;
+            text-align: center;
+            color: white;
+        }
+
+        .gold-stamp {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            width: 120px;
+            height: 120px;
+            border: 6px double #fbbf24;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fbbf24;
+            font-weight: 900;
+            transform: rotate(-15deg);
+            opacity: 0.9;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            background: rgba(251, 191, 36, 0.1);
+            pointer-events: none;
+        }
+
+        /* --- 운영 카드 스타일 --- */
+        .operation-card {
+            @apply bg-white border-2 border-slate-100 p-6 rounded-2xl transition-all hover:border-red-300 hover:shadow-xl;
+        }
+
+        /* 컨페티 효과 */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            animation: confetti-fall 3s linear infinite;
+            z-index: 50;
+        }
+
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100%) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(1000%) rotate(720deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="flex flex-col h-screen overflow-hidden">
+
+    <!-- 상단 헤더 -->
+    <header class="bg-white border-b border-slate-200 h-16 flex-none flex items-center justify-between px-6 z-20 shadow-sm border-t-4 border-t-red-600">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-red-600 rounded-lg shadow-lg flex items-center justify-center text-white text-2xl font-bold font-mono">
+                O
+            </div>
+            <div>
+                <h1 class="text-lg font-black text-slate-800 tracking-tight text-slate-800">게임코딩교실 <span class="text-red-600">Level 10</span></h1>
+                <p class="text-xs text-slate-500 font-medium">Chapter 10: 마인 올림픽 개최 (Grand Opening)</p>
+            </div>
+        </div>
+        <div class="hidden md:flex items-center gap-4 text-sm font-medium text-slate-500 text-slate-500">
+            <span>2026 봄학기</span>
+            <span class="w-px h-4 bg-slate-300 text-slate-300"></span>
+            <span>최종 차시(10차시)</span>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+        <!-- 사이드바 -->
+        <nav class="w-64 bg-white border-r border-slate-200 flex-none hidden md:flex flex-col py-6">
+            <div class="px-6 mb-6 text-center text-slate-400">
+                <p class="text-xs font-bold uppercase tracking-widest">Final Stage</p>
+            </div>
+            <ul class="space-y-1">
+                <li><button onclick="showSection('story')" id="nav-story" class="nav-item active w-full text-left px-6 py-3 flex items-center gap-3 font-bold transition-all"><i data-lucide="party-popper"></i> 개막 선언</button></li>
+                <li><button onclick="showSection('guide')" id="nav-guide" class="nav-item w-full text-left px-6 py-3 flex items-center gap-3 font-medium text-slate-600 hover:bg-slate-50 transition-colors"><i data-lucide="megaphone"></i> 운영/발표 가이드</button></li>
+                <li><button onclick="showSection('tour')" id="nav-tour" class="nav-item w-full text-left px-6 py-3 flex items-center gap-3 font-medium text-slate-600 hover:bg-slate-50 transition-colors"><i data-lucide="map-pin"></i> 월드 투어</button></li>
+                <li><button onclick="showSection('award')" id="nav-award" class="nav-item w-full text-left px-6 py-3 flex items-center gap-3 font-medium text-red-600 font-bold"><i data-lucide="award"></i> 영광의 시상식</button></li>
+            </ul>
+        </nav>
+
+        <!-- 메인 콘텐츠 -->
+        <main class="flex-1 overflow-y-auto p-6 md:p-10 scroll-smooth">
+            <div class="max-w-4xl mx-auto space-y-10">
+                
+                <!-- 0. 학습 목표 -->
+                <div class="bg-slate-900 rounded-2xl p-8 text-white shadow-xl relative overflow-hidden border-b-8 border-red-600">
+                    <div class="relative z-10">
+                        <h2 class="text-xs font-bold text-red-400 mb-2 uppercase tracking-widest text-red-400">Grand Finale Objective</h2>
+                        <ul class="text-xl font-black leading-tight space-y-3">
+                            <li class="flex items-center gap-3"><i data-lucide="star" class="text-yellow-400 fill-yellow-400 text-yellow-400"></i> 기획한 이색 종목의 규칙과 코딩 시스템을 친구들에게 발표한다.</li>
+                            <li class="flex items-center gap-3"><i data-lucide="star" class="text-yellow-400 fill-yellow-400 text-yellow-400"></i> 월드 투어를 통해 다른 팀의 경기장을 체험하고 서로를 응원한다.</li>
+                            <li class="flex items-center gap-3"><i data-lucide="star" class="text-yellow-400 fill-yellow-400 text-yellow-400"></i> 10일간의 코딩 여정을 돌아보며 성취감을 만끽한다.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 1. 스토리 (위원회 개막 선언) -->
+                <section id="section-story" class="section-content active">
+                    <div class="opening-container">
+                        <div class="festival-header relative">
+                            <div class="gold-stamp">GRAND<br>OPENING</div>
+                            <i data-lucide="sparkles" class="w-16 h-16 mx-auto mb-4 text-yellow-300 text-yellow-300"></i>
+                            <h2 class="text-4xl font-black italic tracking-tighter mb-2 uppercase">2026 MINE OLYMPIC</h2>
+                            <p class="text-red-100 font-bold opacity-90 text-xl">공식 개막 선언문</p>
+                        </div>
+                        <div class="p-10 space-y-8 text-slate-700">
+                            <div class="space-y-6">
+                                <h3 class="text-2xl font-black text-slate-800 text-center">"상상이 코딩으로, 코딩이 즐거움으로!"</h3>
+                                <p class="leading-relaxed text-center italic text-lg">
+                                    친애하는 코딩 디렉터 여러분, 드디어 결전의 날이 밝았습니다. <br><br>
+                                    지난 9일 동안 여러분이 흘린 땀방울과 창의적인 고민들이 모여 <br>
+                                    오늘, **'2026 마인크래프트 디지털 올림픽'**이 정식으로 개막함을 선포합니다. <br><br>
+                                    여러분이 직접 설계하고 코딩한 경기장에서 <br>
+                                    정정당당하게 경쟁하고, 서로의 작품을 마음껏 칭찬해 주십시오.
+                                </p>
+                            </div>
+                            <div class="flex justify-center border-y border-slate-100 py-6 my-6">
+                                <div class="text-center px-8 border-r border-slate-100">
+                                    <p class="text-xs font-bold text-slate-400 uppercase text-slate-400">PARTICIPANTS</p>
+                                    <p class="text-2xl font-black text-red-600">ALL AGENTS</p>
+                                </div>
+                                <div class="text-center px-8 border-r border-slate-100">
+                                    <p class="text-xs font-bold text-slate-400 uppercase text-slate-400">LOCATION</p>
+                                    <p class="text-2xl font-black text-red-600">COORDINATE 0,0</p>
+                                </div>
+                                <div class="text-center px-8 text-green-600">
+                                    <p class="text-xs font-bold text-slate-400 uppercase text-slate-400">STATUS</p>
+                                    <p class="text-2xl font-black animate-pulse text-green-600">LIVE NOW</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. 운영/발표 가이드 -->
+                <section id="section-guide" class="section-content">
+                    <div class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
+                        <h3 class="font-black text-2xl text-slate-800 mb-8 flex items-center gap-3 italic underline decoration-red-500 decoration-4 underline-offset-8"><i data-lucide="megaphone" class="text-red-600"></i> 성공적인 운영을 위한 가이드</h3>
+                        
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="p-6 bg-red-50 rounded-2xl border-l-8 border-red-500">
+                                <h4 class="font-black text-red-800 mb-4 flex items-center gap-2 text-lg text-red-800">📣 발표 시나리오</h4>
+                                <ul class="space-y-3 text-sm text-red-700 text-red-700">
+                                    <li class="flex gap-2"><strong>1.</strong> 종목의 이름과 기획 의도를 설명하세요.</li>
+                                    <li class="flex gap-2"><strong>2.</strong> 어떤 코딩 기술을 썼는지 보여주세요. (예: "저희는 <b>함수</b>를 써서 수비수를 배치했습니다!")</li>
+                                    <li class="flex gap-2"><strong>3.</strong> 게임 규칙과 승리 조건을 명확히 알려주세요.</li>
+                                </ul>
+                            </div>
+                            <div class="p-6 bg-blue-50 rounded-2xl border-l-8 border-blue-500">
+                                <h4 class="font-black text-blue-800 mb-4 flex items-center gap-2 text-lg text-blue-800">🕹️ 경기 운영 팁</h4>
+                                <ul class="space-y-3 text-sm text-blue-700 text-blue-700">
+                                    <li class="flex gap-2"><strong>1.</strong> 참가자들이 준비되었는지 확인 후 채팅 명령어를 입력하세요.</li>
+                                    <li class="flex gap-2"><strong>2.</strong> 오류가 발생하면 당황하지 말고 "잠시만 기다려주세요"라고 말한 뒤 코드를 확인합니다.</li>
+                                    <li class="flex gap-2"><strong>3.</strong> 경기가 끝나면 우승자를 크게 발표하고 축하해주세요!</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. 월드 투어 -->
+                <section id="section-tour" class="section-content">
+                    <h3 class="font-black text-2xl text-slate-800 mb-6 flex items-center gap-3 italic"><i data-lucide="globe" class="text-blue-500"></i> 올림픽 월드 투어: 서로의 세계로!</h3>
+                    
+                    <div class="operation-card space-y-6">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                            <div>
+                                <p class="text-sm font-bold text-slate-400 uppercase text-slate-400 uppercase">World Tour Mission</p>
+                                <h4 class="text-xl font-black text-slate-800 italic text-slate-800">다른 팀의 경기장을 방문하고 평가하세요.</h4>
+                            </div>
+                            <div class="text-4xl">✈️</div>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="p-4 bg-slate-50 rounded-xl text-center">
+                                <i data-lucide="eye" class="mx-auto mb-2 text-slate-400 text-slate-400"></i>
+                                <h5 class="font-bold text-sm mb-1 text-slate-800">관찰하기</h5>
+                                <p class="text-[10px] text-slate-500 text-slate-500">맵 디자인과 조명 효과를 살펴봅니다.</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 rounded-xl text-center">
+                                <i data-lucide="play-circle" class="mx-auto mb-2 text-slate-400 text-slate-400"></i>
+                                <h5 class="font-bold text-sm mb-1 text-slate-800">플레이하기</h5>
+                                <p class="text-[10px] text-slate-500 text-slate-500">직접 경기에 참여해 규칙을 체험합니다.</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 rounded-xl text-center">
+                                <i data-lucide="message-circle" class="mx-auto mb-2 text-slate-400 text-slate-400"></i>
+                                <h5 class="font-bold text-sm mb-1 text-slate-800">응원하기</h5>
+                                <p class="text-[10px] text-slate-500 text-slate-500">"코드가 정말 기발해요!" 같은 칭찬을 나눕니다.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-yellow-50 p-4 rounded-xl border border-yellow-200">
+                            <p class="text-xs text-yellow-800 leading-relaxed font-bold text-yellow-800">
+                                💡 선생님 가이드: 투어 시간을 팀당 5~10분으로 제한하여 모든 팀이 골고루 방문할 수 있도록 해주세요.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. 영광의 시상식 (밝은 색상 & 잉크 절약 모드) -->
+                <section id="section-award" class="section-content">
+                    <div class="bg-white rounded-3xl p-10 shadow-2xl relative overflow-hidden text-center border-4 border-yellow-400">
+                        <!-- 배경 컨페티 장식 (JS로 생성됨) -->
+                        <div id="confetti-layer" class="absolute inset-0 pointer-events-none"></div>
+
+                        <div class="relative z-10 space-y-8">
+                            <i data-lucide="award" class="w-24 h-24 mx-auto text-yellow-500 drop-shadow-[0_4px_10px_rgba(234,179,8,0.3)] text-yellow-500"></i>
+                            <div class="space-y-2">
+                                <h3 class="text-slate-900 font-black text-4xl italic uppercase text-slate-900">Ceremony of Victory</h3>
+                                <p class="text-slate-700 font-bold text-xl text-slate-700 underline decoration-yellow-400 decoration-4 underline-offset-8">
+                                    영광의 마인 올림픽 시상식
+                                </p>
+                            </div>
+                            
+                            <p class="text-slate-600 text-lg max-w-xl mx-auto font-medium leading-relaxed text-slate-600">
+                                "순위보다 중요한 것은 우리가 만든 놀라운 세상입니다.<br>
+                                모든 참가자들에게 큰 박수를 보냅니다!"
+                            </p>
+
+                            <div class="grid md:grid-cols-3 gap-6 pt-10">
+                                <!-- Best Creative -->
+                                <div class="bg-amber-50 p-6 rounded-2xl border border-amber-100 hover:shadow-md transition-all group">
+                                    <div class="text-4xl mb-2 group-hover:scale-110 transition-transform">💡</div>
+                                    <h4 class="font-black text-amber-700 text-sm mb-1 text-amber-700">최고의 아이디어상</h4>
+                                    <p class="text-[10px] text-slate-500 text-slate-500 leading-tight">가장 독창적인 종목을<br>기획한 팀</p>
+                                </div>
+                                <!-- Best Engineer -->
+                                <div class="bg-yellow-50 p-8 rounded-2xl border-4 border-yellow-400 hover:shadow-xl transition-all scale-110 relative">
+                                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-white px-3 py-1 rounded-full text-[10px] font-black uppercase">Grand Prix</div>
+                                    <div class="text-5xl mb-2">🏆</div>
+                                    <h4 class="font-black text-yellow-800 text-base mb-1 text-yellow-800">올림픽 그랑프리</h4>
+                                    <p class="text-[10px] text-slate-600 text-slate-600 leading-tight">기획, 건축, 코딩이<br>가장 완벽했던 팀</p>
+                                </div>
+                                <!-- Best Architect -->
+                                <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 hover:shadow-md transition-all group">
+                                    <div class="text-4xl mb-2 group-hover:scale-110 transition-transform">🏛️</div>
+                                    <h4 class="font-black text-blue-700 text-sm mb-1 text-blue-700">최고의 건축상</h4>
+                                    <p class="text-[10px] text-slate-500 text-slate-500 leading-tight">경기장을 가장 화려하게<br>지은 팀</p>
+                                </div>
+                            </div>
+
+                            <div class="pt-10 flex flex-col items-center gap-4">
+                                <button onclick="launchFestival()" class="px-12 py-5 bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-black rounded-full shadow-lg transition-all active:scale-95 flex items-center justify-center gap-3 text-lg border-b-4 border-yellow-600">
+                                    <i data-lucide="crown"></i> 마인 올림픽 종료 및 축제 시작!
+                                </button>
+                                <p class="text-[10px] text-slate-400 font-bold text-slate-400 italic">"10일간의 코딩 대장정, 우리 모두가 챔피언입니다!"</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+            <footer class="py-12 text-center text-slate-400 text-xs font-medium text-slate-400">
+                &copy; 2026 마인 올림픽 최종 프로젝트 | Level 10 피날레 | AI Play Art
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        // 초기화
+        window.onload = () => {
+            lucide.createIcons();
+        };
+
+        // 섹션 전환
+        function showSection(id) {
+            document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
+            document.getElementById('section-' + id).classList.add('active');
+
+            document.querySelectorAll('.nav-item').forEach(n => {
+                n.classList.remove('active', 'bg-fef2f2', 'text-dc2626', 'border-r-4', 'border-ef4444');
+                n.classList.add('text-slate-600', 'hover:bg-slate-50');
+                if (n.id === 'nav-' + id) {
+                    n.classList.add('active', 'bg-fef2f2', 'text-dc2626', 'border-r-4', 'border-ef4444');
+                    n.classList.remove('text-slate-600', 'hover:bg-slate-50');
+                }
+            });
+            
+            document.querySelector('main').scrollTop = 0;
+        }
+
+        // 축제 효과 (컨페티)
+        function launchFestival() {
+            const layer = document.getElementById('confetti-layer');
+            layer.innerHTML = '';
+            const colors = ['#f87171', '#fbbf24', '#34d399', '#60a5fa', '#a78bfa'];
+            
+            for (let i = 0; i < 70; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                confetti.style.animationDelay = (Math.random() * 0.5) + 's';
+                layer.appendChild(confetti);
+            }
+            
+            setTimeout(() => {
+                alert("✨ 2026 마인 올림픽이 성공적으로 마무리되었습니다! 모두 고생 많았습니다!");
+            }, 500);
+        }
+    </script>
+</body>
+</html>
